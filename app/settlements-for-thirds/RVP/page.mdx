@@ -1,0 +1,147 @@
+# RVP: Receive Versus Payment Models
+
+## RVP Models
+
+### Model 1
+
+The buyer pays for the securities only when they are received, ensuring that the buyer does not pay for securities that are not delivered.
+
+```mermaid
+---
+title: RVP Model 1
+---
+sequenceDiagram
+    participant Buyer
+    participant Buyer's Custodian
+    participant Clearinghouse
+    participant Seller's Custodian
+    participant Seller
+
+    Buyer->>Buyer's Custodian: Sends purchase instruction (MT 542)
+    Seller->>Seller's Custodian: Sends sell instruction (MT 544)
+
+    Buyer's Custodian->>Clearinghouse: MT 542 (Receive vs Payment Instruction)
+    Seller's Custodian->>Clearinghouse: MT 544 (Deliver vs Payment Instruction)
+
+    Clearinghouse-->>Buyer's Custodian: MT 535 (Statement of Holdings - Confirm Cash Availability)
+    Clearinghouse-->>Seller's Custodian: MT 535 (Statement of Holdings - Confirm Cash Availability)
+
+    Clearinghouse->>Clearinghouse: Validates cash & securities availability
+
+    alt Cash Available
+        Clearinghouse->>Buyer's Custodian: MT 548 (Settlement Status - Instruct Cash Transfer)
+        Buyer's Custodian->>Seller's Custodian: Cash Transfer Settled (MT 950 - Cash Movement Confirmation)
+
+        Clearinghouse->>Seller's Custodian: MT 548 (Settlement Status - Instruct Securities Transfer)
+        Seller's Custodian->>Buyer's Custodian: Securities Transfer Settled (MT 544 - Receive Confirmation)
+
+        Buyer's Custodian-->>Buyer: Settlement Confirmation (MT 544)
+        Seller's Custodian-->>Seller: Settlement Confirmation (MT 546)
+    else Error - Cash Not Available
+        Clearinghouse-->>Buyer's Custodian: MT 547 (Settlement Allegement - Cash Missing)
+        Clearinghouse-->>Seller's Custodian: MT 547 (Settlement Allegement - On Hold)
+        Buyer's Custodian-->>Buyer: Error Notification (MT 547 - Cash Missing)
+        Seller's Custodian-->>Seller: Error Notification (MT 547 - On Hold)
+    else Error - Securities Not Available
+        Clearinghouse-->>Seller's Custodian: MT 547 (Settlement Allegement - Securities Missing)
+        Clearinghouse-->>Buyer's Custodian: MT 547 (Settlement Allegement - On Hold)
+        Seller's Custodian-->>Seller: Error Notification (MT 547 - Securities Missing)
+        Buyer's Custodian-->>Buyer: Error Notification (MT 547 - On Hold)
+    end
+```
+
+### Model 2
+
+The seller delivers the securities only when payment is received, ensuring that the seller does not deliver securities without receiving payment.
+
+```mermaid
+---
+title: RVP Model 2
+---
+sequenceDiagram
+    participant Buyer
+    participant Buyer's Custodian
+    participant Clearinghouse
+    participant Seller's Custodian
+    participant Seller
+
+    Buyer->>Buyer's Custodian: Sends purchase instruction (MT 542)
+    Seller->>Seller's Custodian: Sends sell instruction (MT 544)
+
+    Buyer's Custodian->>Clearinghouse: MT 542 (Receive vs Payment Instruction)
+    Seller's Custodian->>Clearinghouse: MT 544 (Deliver vs Payment Instruction)
+
+    Clearinghouse-->>Buyer's Custodian: MT 535 (Statement of Holdings - Confirm Cash Availability)
+    Clearinghouse-->>Seller's Custodian: MT 535 (Statement of Holdings - Confirm Cash Availability)
+
+    Clearinghouse->>Clearinghouse: Validates cash & securities availability
+
+    alt Cash Available
+        Clearinghouse->>Buyer's Custodian: MT 548 (Settlement Status - Instruct Cash Transfer)
+        Buyer's Custodian->>Seller's Custodian: Cash Transfer Settled (MT 950 - Cash Movement Confirmation)
+
+        Clearinghouse->>Seller's Custodian: MT 548 (Settlement Status - Instruct Securities Transfer)
+        Seller's Custodian->>Buyer's Custodian: Securities Transfer Settled (MT 544 - Receive Confirmation)
+
+        Buyer's Custodian-->>Buyer: Settlement Confirmation (MT 544)
+        Seller's Custodian-->>Seller: Settlement Confirmation (MT 546)
+    else Error - Cash Not Available
+        Clearinghouse-->>Buyer's Custodian: MT 547 (Settlement Allegement - Cash Missing)
+        Clearinghouse-->>Seller's Custodian: MT 547 (Settlement Allegement - On Hold)
+        Buyer's Custodian-->>Buyer: Error Notification (MT 547 - Cash Missing)
+        Seller's Custodian-->>Seller: Error Notification (MT 547 - On Hold)
+    else Error - Securities Not Available
+        Clearinghouse-->>Seller's Custodian: MT 547 (Settlement Allegement - Securities Missing)
+        Clearinghouse-->>Buyer's Custodian: MT 547 (Settlement Allegement - On Hold)
+        Seller's Custodian-->>Seller: Error Notification (MT 547 - Securities Missing)
+        Buyer's Custodian-->>Buyer: Error Notification (MT 547 - On Hold)
+    end
+```
+
+### Model 3
+
+The transaction is settled in cash rather than through the transfer of securities, typically used for derivatives or futures contracts.
+
+```mermaid
+---
+title: RVP Model 3
+---
+sequenceDiagram
+    participant Buyer
+    participant Buyer's Custodian
+    participant Clearinghouse
+    participant Seller's Custodian
+    participant Seller
+
+    Buyer->>Buyer's Custodian: Sends purchase instruction (MT 542)
+    Seller->>Seller's Custodian: Sends sell instruction (MT 544)
+
+    Buyer's Custodian->>Clearinghouse: MT 542 (Receive vs Payment Instruction)
+    Seller's Custodian->>Clearinghouse: MT 544 (Deliver vs Payment Instruction)
+
+    Clearinghouse-->>Buyer's Custodian: MT 535 (Statement of Holdings - Confirm Cash Availability)
+    Clearinghouse-->>Seller's Custodian: MT 535 (Statement of Holdings - Confirm Cash Availability)
+
+    Clearinghouse->>Clearinghouse: Validates cash & securities availability
+
+    alt Cash Available & Securities Available
+        Clearinghouse->>Buyer's Custodian: MT 548 (Settlement Status - Instruct Cash Transfer)
+        Buyer's Custodian->>Seller's Custodian: Cash Transfer Settled (MT 950 - Cash Movement Confirmation)
+
+        Clearinghouse->>Seller's Custodian: MT 548 (Settlement Status - Instruct Securities Transfer)
+        Seller's Custodian->>Buyer's Custodian: Securities Transfer Settled (MT 544 - Receive Confirmation)
+
+        Buyer's Custodian-->>Buyer: Settlement Confirmation (MT 544)
+        Seller's Custodian-->>Seller: Settlement Confirmation (MT 546)
+    else Error - Cash Not Available
+        Clearinghouse-->>Buyer's Custodian: MT 547 (Settlement Allegement - Cash Missing)
+        Clearinghouse-->>Seller's Custodian: MT 547 (Settlement Allegement - On Hold)
+        Buyer's Custodian-->>Buyer: Error Notification (MT 547 - Cash Missing)
+        Seller's Custodian-->>Seller: Error Notification (MT 547 - On Hold)
+    else Error - Securities Not Available
+        Clearinghouse-->>Seller's Custodian: MT 547 (Settlement Allegement - Securities Missing)
+        Clearinghouse-->>Buyer's Custodian: MT 547 (Settlement Allegement - On Hold)
+        Seller's Custodian-->>Seller: Error Notification (MT 547 - Securities Missing)
+        Buyer's Custodian-->>Buyer: Error Notification (MT 547 - On Hold)
+    end
+```
