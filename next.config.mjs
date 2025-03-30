@@ -1,5 +1,7 @@
 import nextra from "nextra";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const withNextra = nextra({
   // ... Other Nextra config options
 });
@@ -8,4 +10,8 @@ const withNextra = nextra({
 export default withNextra({
   // ... Other Next.js config options
   output: "export",
+  assetPrefix: isProd ? "/finance-for-testers/" : "",
+  images: {
+    unoptimized: true,
+  },
 });
