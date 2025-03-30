@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import mermaid from "mermaid";
 
-type InteractiveMermaidProps = {};
+// type InteractiveMermaidProps = {};
 
 const InteractiveMermaid = () => {
   const [hoverText, setHoverText] = useState("Hover over a node or connection!");
