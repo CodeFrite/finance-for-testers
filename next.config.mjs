@@ -1,14 +1,10 @@
 import nextra from "nextra";
 
 const withNextra = nextra({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
+  // ... Other Nextra config options
 });
 
+// You can include other Next.js configuration options here, in addition to Nextra settings:
 export default withNextra({
-  output: "export",
-  images: {
-    unoptimized: true, // GitHub Pages doesn't support Next.js image optimization
-  },
-  trailingSlash: true, // Ensures correct URL routing for GitHub Pages
+  // ... Other Next.js config options
 });
