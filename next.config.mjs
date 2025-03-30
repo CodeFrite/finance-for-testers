@@ -9,7 +9,7 @@ const withNextra = nextra({
 // You can include other Next.js configuration options here, in addition to Nextra settings:
 export default withNextra({
   // ... Other Next.js config options
-  output: "export",
+  //output: "export",
   assetPrefix: isProd ? "/finance-for-testers/" : "",
   images: {
     unoptimized: true,
