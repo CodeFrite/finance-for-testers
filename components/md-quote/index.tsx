@@ -4,7 +4,7 @@ type MDQuoteProps = {
 };
 
 const MDQuote = (props: MDQuoteProps) => {
-  return "quote";
+  return "quote" + props.source + props.children;
 };
 
 export default MDQuote;
