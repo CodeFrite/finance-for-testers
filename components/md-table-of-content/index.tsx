@@ -3,17 +3,24 @@
 import { useEffect, useState } from "react";
 import mermaid from "mermaid";
 
-const MDTableOfContent = ({ headings }) => {
+type MDTableOfContentProps = {
+  headings: {
+    depth: number;
+    title: string;
+  }[];
+};
+
+const MDTableOfContent = (props: MDTableOfContentProps) => {
   const [graphDefinition, setGraphDefinition] = useState("");
 
   useEffect(() => {
     mermaid.initialize({ startOnLoad: true });
 
-    if (headings.length > 0) {
+    if (props.headings.length > 0) {
       // Convert headings into Mermaid mind map format
       let graph = "mindmap\n  root((Documentation))\n";
 
-      headings.forEach(({ depth, title }) => {
+      props.headings.forEach(({ depth, title }) => {
         const indent = "  ".repeat(depth); // Create indentation based on heading level
         graph += `${indent}  ${title}\n`;
       });
@@ -23,7 +30,7 @@ const MDTableOfContent = ({ headings }) => {
 
     // Run Mermaid to render the graph
     setTimeout(() => mermaid.run(), 100);
-  }, [headings]);
+  }, [props.headings]);
 
   return (
     <div>
